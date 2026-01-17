@@ -31,6 +31,15 @@ fun getApodImageUrl(apod: ApodResponse): String {
     }
 }
 
+fun apodPageUrl(date: String): String {
+    val parts = date.split("-")
+    val yy = parts[0].takeLast(2)
+    val mm = parts[1]
+    val dd = parts[2]
+
+    return "https://apod.nasa.gov/apod/ap$yy$mm$dd.html"
+}
+
 @Composable
 fun ApodScreen(
     apiKey: String,
@@ -55,7 +64,7 @@ fun ApodScreen(
         val today = Calendar.getInstance()
 
         val minDateCal = Calendar.getInstance().apply {
-            add(Calendar.DAY_OF_MONTH, -30)
+            add(Calendar.DAY_OF_MONTH, -90)
         }
 
         DatePickerDialog(
@@ -107,18 +116,41 @@ fun ApodScreen(
 
             if (it.mediaType != "image") {
                 Spacer(modifier = Modifier.height(8.dp))
+                when {
+                    it.mediaType == "video" && !it.url.isNullOrBlank() -> {
+                        Button(
+                            onClick = {
+                                context.startActivity(
+                                    Intent(Intent.ACTION_VIEW, Uri.parse(it.url))
+                                )
+                            },
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        ) {
+                            Text("Play video on YouTube")
+                        }
+                    }
 
-                Button(
-                    onClick = {
-                        val intent = Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse(it.url)
+                    it.mediaType == "other" && selectedDate != null -> {
+                        Text(
+                            text = "Thumbnail unavailable.",
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
-                        context.startActivity(intent)
-                    },
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                ) {
-                    Text("Play video")
+
+                        Spacer(modifier = Modifier.height(6.dp))
+
+                        Button(
+                            onClick = {
+                                val pageUrl = apodPageUrl(selectedDate!!)
+                                context.startActivity(
+                                    Intent(Intent.ACTION_VIEW, Uri.parse(pageUrl))
+                                )
+                            },
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        ) {
+                            Text("View on NASA APOD page")
+                        }
+                    }
                 }
             }
 
