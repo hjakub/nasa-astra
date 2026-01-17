@@ -1,9 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Ad_astra" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+    <!-- Base app theme -->
+    <style name="Base.Theme.Ad_astra" parent="Theme.Material3.DayNight.NoActionBar" />
+
+    <!-- App theme -->
+    <style name="Theme.Ad_astra" parent="Base.Theme.Ad_astra" />
+
+    <!-- Splash theme -->
+    <style name="Theme.Ad_astra.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#000000</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
+        <item name="windowSplashScreenIconBackgroundColor">#103A98</item>
+        <item name="postSplashScreenTheme">@style/Theme.Ad_astra</item>
     </style>
 
-    <style name="Theme.Ad_astra" parent="Base.Theme.Ad_astra" />
 </resources>
