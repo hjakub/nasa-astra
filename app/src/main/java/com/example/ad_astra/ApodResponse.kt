@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class ApodResponse(
     val title: String,
     val url: String,
+    val date: String,
     val explanation: String,
 
     @SerializedName("media_type")

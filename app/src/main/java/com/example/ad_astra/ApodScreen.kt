@@ -18,6 +18,10 @@ import androidx.compose.ui.layout.ContentScale
 import java.text.SimpleDateFormat
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import kotlinx.coroutines.launch
 import java.util.*
 
 fun getApodImageUrl(apod: ApodResponse): String {
@@ -47,6 +51,9 @@ fun ApodScreen(
 ) {
     val apod by viewModel.apod.collectAsState()
     val context = LocalContext.current
+    val favoritesRepo = remember { FavoritesRepository(context) }
+    val favorites by favoritesRepo.favorites.collectAsState(initial = emptyList())
+    val scope = rememberCoroutineScope()
 
     val dateFormat = remember {
         SimpleDateFormat("yyyy-MM-dd", Locale.US)
@@ -161,6 +168,25 @@ fun ApodScreen(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Text("Pick date")
+            }
+
+            val isFavorite = favorites.any { fav -> fav.date == it.date }
+
+            IconButton(
+                onClick = {
+                    scope.launch {
+                        favoritesRepo.toggleFavorite(it)
+                    }
+                },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Icon(
+                    imageVector = if (isFavorite)
+                        Icons.Filled.Favorite
+                    else
+                        Icons.Outlined.FavoriteBorder,
+                    contentDescription = "Favorite"
+                )
             }
 
             Spacer(modifier = Modifier.height(12.dp))

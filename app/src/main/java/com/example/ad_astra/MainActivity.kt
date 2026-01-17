@@ -13,7 +13,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
-
         super.onCreate(savedInstanceState)
 
         val apiKey = BuildConfig.NASA_API_KEY
@@ -24,7 +23,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ApodScreen(apiKey = apiKey)
+                    AppNavHost(apiKey = apiKey)
                 }
             }
         }
