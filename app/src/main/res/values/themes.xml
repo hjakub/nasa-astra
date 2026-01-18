@@ -8,10 +8,16 @@
 
     <!-- Splash theme -->
     <style name="Theme.Ad_astra.Splash" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">#103A98</item>
+        <item name="windowSplashScreenBackground">#0D2F7A</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
-        <item name="windowSplashScreenIconBackgroundColor">#103A98</item>
+        <item name="windowSplashScreenIconBackgroundColor">#0D2F7A</item>
         <item name="postSplashScreenTheme">@style/Theme.Ad_astra</item>
+    </style>
+
+    <!-- Calendar -->
+    <style name="CustomDatePickerTheme" parent="Theme.Material3.Dark.Dialog">
+        <item name="colorPrimary">#EC3E2B</item>
+        <item name="android:textColorPrimary">#EC3E2B</item>
     </style>
 
 </resources>

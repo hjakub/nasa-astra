@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.example.ad_astra.ui.theme.AdAstraTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -18,7 +19,7 @@ class MainActivity : ComponentActivity() {
         val apiKey = BuildConfig.NASA_API_KEY
 
         setContent {
-            MaterialTheme {
+            AdAstraTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

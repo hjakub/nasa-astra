@@ -1,8 +1,7 @@
-package com.example.ad_astra
-
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.net.Uri
+import android.view.ContextThemeWrapper
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -21,16 +20,19 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.Text
+import androidx.compose.ui.graphics.Color
+import com.example.ad_astra.ApodResponse
+import com.example.ad_astra.ApodViewModel
+import com.example.ad_astra.FavoritesRepository
 import kotlinx.coroutines.launch
 import java.util.*
+import com.example.ad_astra.R
 
 fun getApodImageUrl(apod: ApodResponse): String {
     return when (apod.mediaType) {
         "image" -> apod.url
-
-        "video" -> apod.thumbnailUrl
-            ?: "https://via.placeholder.com/800x600.png?text=Video"
-
+        "video" -> apod.thumbnailUrl ?: "https://via.placeholder.com/800x600.png?text=Video"
         else -> "https://via.placeholder.com/800x600.png?text=NASA+Video"
     }
 }
@@ -40,7 +42,6 @@ fun apodPageUrl(date: String): String {
     val yy = parts[0].takeLast(2)
     val mm = parts[1]
     val dd = parts[2]
-
     return "https://apod.nasa.gov/apod/ap$yy$mm$dd.html"
 }
 
@@ -54,11 +55,7 @@ fun ApodScreen(
     val favoritesRepo = remember { FavoritesRepository(context) }
     val favorites by favoritesRepo.favorites.collectAsState(initial = emptyList())
     val scope = rememberCoroutineScope()
-
-    val dateFormat = remember {
-        SimpleDateFormat("yyyy-MM-dd", Locale.US)
-    }
-
+    val dateFormat = remember { SimpleDateFormat("yyyy-MM-dd", Locale.US) }
     var selectedDate by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
@@ -69,13 +66,14 @@ fun ApodScreen(
 
     fun showDatePicker() {
         val today = Calendar.getInstance()
-
         val minDateCal = Calendar.getInstance().apply {
             add(Calendar.DAY_OF_MONTH, -90)
         }
 
+        val dialogContext = ContextThemeWrapper(context, R.style.CustomDatePickerTheme)
+
         DatePickerDialog(
-            context,
+            dialogContext,
             { _, year, month, day ->
                 val picked = Calendar.getInstance().apply {
                     set(year, month, day)
@@ -100,18 +98,12 @@ fun ApodScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
-
             Text(
                 text = it.title,
                 style = MaterialTheme.typography.headlineSmall
             )
-
             Spacer(modifier = Modifier.height(12.dp))
-
-            val imageUrl = remember(it) {
-                getApodImageUrl(it)
-            }
-
+            val imageUrl = remember(it) { getApodImageUrl(it) }
             AsyncImage(
                 model = imageUrl,
                 contentDescription = it.title,
@@ -120,7 +112,6 @@ fun ApodScreen(
                     .height(300.dp),
                 contentScale = ContentScale.Crop
             )
-
             if (it.mediaType != "image") {
                 Spacer(modifier = Modifier.height(8.dp))
                 when {
@@ -131,21 +122,22 @@ fun ApodScreen(
                                     Intent(Intent.ACTION_VIEW, Uri.parse(it.url))
                                 )
                             },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.White,
+                                contentColor = Color.Black
+                            ),
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         ) {
                             Text("Play video on YouTube")
                         }
                     }
-
                     it.mediaType == "other" && selectedDate != null -> {
                         Text(
                             text = "Thumbnail unavailable.",
                             style = MaterialTheme.typography.bodySmall,
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
-
                         Spacer(modifier = Modifier.height(6.dp))
-
                         Button(
                             onClick = {
                                 val pageUrl = apodPageUrl(selectedDate!!)
@@ -153,6 +145,10 @@ fun ApodScreen(
                                     Intent(Intent.ACTION_VIEW, Uri.parse(pageUrl))
                                 )
                             },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.White,
+                                contentColor = Color.Black
+                            ),
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         ) {
                             Text("View on NASA APOD page")
@@ -160,37 +156,27 @@ fun ApodScreen(
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
             Button(
                 onClick = { showDatePicker() },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color.Black
+                ),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Text("Pick date")
             }
-
             val isFavorite = favorites.any { fav -> fav.date == it.date }
-
             IconButton(
-                onClick = {
-                    scope.launch {
-                        favoritesRepo.toggleFavorite(it)
-                    }
-                },
+                onClick = { scope.launch { favoritesRepo.toggleFavorite(it) } },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Icon(
-                    imageVector = if (isFavorite)
-                        Icons.Filled.Favorite
-                    else
-                        Icons.Outlined.FavoriteBorder,
+                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                     contentDescription = "Favorite"
                 )
             }
-
             Spacer(modifier = Modifier.height(12.dp))
-
             Text(text = it.explanation)
         }
     } ?: Box(

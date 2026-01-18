@@ -5,8 +5,10 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+
 
 @Composable
 fun BottomNavbar(navController: NavController) {
@@ -16,13 +18,17 @@ fun BottomNavbar(navController: NavController) {
         NavRoute.Favorites to Icons.Filled.Favorite
     )
 
-    NavigationBar {
-        val backStackEntry = navController.currentBackStackEntryAsState()
-        val currentRoute = backStackEntry.value?.destination?.route
+    val backStackEntry = navController.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry.value?.destination?.route
 
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.surfaceVariant
+    ) {
         items.forEach { (route, icon) ->
+            val selected = currentRoute == route.route
+
             NavigationBarItem(
-                selected = currentRoute == route.route,
+                selected = selected,
                 onClick = {
                     navController.navigate(route.route) {
                         popUpTo(navController.graph.startDestinationId) {
@@ -32,9 +38,24 @@ fun BottomNavbar(navController: NavController) {
                         restoreState = true
                     }
                 },
-                icon = { Icon(icon, contentDescription = route.route) },
-                label = { Text(route.route.replaceFirstChar { it.uppercase() }) }
+                icon = {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = route.route
+                    )
+                },
+                label = {
+                    Text(route.route.replaceFirstChar { it.uppercase() })
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = Color.Black,
+                    selectedTextColor = Color.White,
+                    unselectedIconColor = Color.White,
+                    unselectedTextColor = Color.White,
+                    indicatorColor = Color.White
+                )
             )
         }
     }
 }
+

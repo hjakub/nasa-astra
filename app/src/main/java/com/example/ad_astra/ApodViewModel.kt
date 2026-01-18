@@ -25,11 +25,6 @@ class ApodViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = apiService.getApod(apiKey, date)
-
-
-                Log.d("APOD_DEBUG", "MEDIA=${response.mediaType}")
-                Log.d("APOD_DEBUG", "THUMB=${response.thumbnailUrl}")
-
                 _apod.value = response
             } catch (e: Exception) {
                 e.printStackTrace()
