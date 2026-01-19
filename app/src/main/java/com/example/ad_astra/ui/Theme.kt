@@ -1,8 +1,7 @@
-package com.example.ad_astra.ui.theme
+package com.example.ad_astra.ui
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 
 private val BlueDarkColorScheme = darkColorScheme(
     primary = BlueAccent,

@@ -1,4 +1,4 @@
-package com.example.ad_astra.ui.theme
+package com.example.ad_astra.ui
 
 import androidx.compose.ui.graphics.Color
 

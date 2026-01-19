@@ -8,7 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.example.ad_astra.ui.theme.AdAstraTheme
+import com.example.ad_astra.ui.AdAstraTheme
 
 class MainActivity : ComponentActivity() {
 
