@@ -51,17 +51,19 @@ fun ApodScreen(
     viewModel: ApodViewModel = viewModel()
 ) {
     val apod by viewModel.apod.collectAsState()
+    val selectedDate by viewModel.selectedDate.collectAsState()
+
+    LaunchedEffect(Unit) {
+        if (apod == null) {
+            viewModel.loadApod(apiKey)
+        }
+    }
+
     val context = LocalContext.current
     val favoritesRepo = remember { FavoritesRepository(context) }
     val favorites by favoritesRepo.favorites.collectAsState(initial = emptyList())
     val scope = rememberCoroutineScope()
     val dateFormat = remember { SimpleDateFormat("yyyy-MM-dd", Locale.US) }
-    var selectedDate by remember { mutableStateOf<String?>(null) }
-
-    LaunchedEffect(Unit) {
-        viewModel.loadApod(apiKey)
-    }
-
     val calendar = remember { Calendar.getInstance() }
 
     fun showDatePicker() {
@@ -70,16 +72,18 @@ fun ApodScreen(
             add(Calendar.DAY_OF_MONTH, -90)
         }
 
-        val dialogContext = ContextThemeWrapper(context, R.style.CustomDatePickerTheme)
+        val calendar = viewModel.getCalendar()
+
+        val dialogContext = ContextThemeWrapper(
+            context,
+            R.style.CustomDatePickerTheme
+        )
 
         DatePickerDialog(
             dialogContext,
             { _, year, month, day ->
-                val picked = Calendar.getInstance().apply {
-                    set(year, month, day)
-                }
-                selectedDate = dateFormat.format(picked.time)
-                viewModel.loadApod(apiKey, selectedDate)
+                viewModel.setDateFromPicker(year, month, day)
+                viewModel.loadApod(apiKey)
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
